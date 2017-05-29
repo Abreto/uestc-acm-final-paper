@@ -3,8 +3,6 @@
 
 \documentclass[withoutpreface,bwprint]{cumcmthesis}
 
-\newcommand\vFind{\verb|Find|}
-\newcommand\vUnion{\verb|Union|}
 
 \coursename{ACM-ICPC 算法与程序设计}
 \title{基于不相交集的问题求解报告}
@@ -94,12 +92,31 @@
 从集合的观点看，$\cup$ 的结果是建立一个新集合 $S_k = S_i \cup S_j$，并去掉原来两个集合而保持所有的集合的不相交性。
 由于这个原因，常常把这项工作的算法叫做不相交集的 \verb|Union|/\verb|Find| 算法，不相交集也叫并查集。
 
+很容易观察到，该算法是动态的。因为在算法执行的过程中，集合可以通过 \verb|Union| 运算而发生变化。
+另外，由 \verb|Find| 返回的集合的名字实际上是相当任意的。
+真正重要的关键在于：当 $a$ 和 $b$ 在同一个集合中的时候，$\mathrm{Find}(a) = \mathrm{Find}(b)$。
+
+解决动态等价性问题的方案有两种。
+一种方案保证指令 \verb|Find| 能够以常数最坏情形运行时间执行，
+而另一种方案则保证指令 \verb|Union| 能够以常数最坏情形运行时间执行。
+曾有人指出二者不能同时做到。
+
 \section{不相交集的实现}
+
+本文将考查 \verb|Union|/\verb|Find| 问题的一种解法，
+其中每次操作的执行时间几乎是常数时间。
 
 \subsection{基本数据结构}
 
 %\subsubsection{容器的选择}
+注意到动态等价性问题并不要求 \verb|Find| 操作返回任何特定的名字，
+而只是要求当且仅当两个元素属于同一个集合时，
+作用在这两个元素上的 \verb|Find| 返回相同的名字。
 
+于是有多种容器可以用来实现并查算法，例如树、数组（向量）、集合（红黑树）等，
+本文仅讨论使用树来表示集合的实现方法。
+由于树上每一个元素都有相同的根，
+这样该根就可以用来命名所在的集合。
 
 \subsection{并查算法}
 
