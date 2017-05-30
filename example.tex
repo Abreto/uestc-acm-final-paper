@@ -118,11 +118,56 @@
 由于树上每一个元素都有相同的根，
 这样该根就可以用来命名所在的集合。
 
+虽然这些树不一定是二叉树，但要表示他们却相当的容易，因为需要存储的唯一信息就是一个父指针。
+集合的名字由根节点给出。
+可以用一个数组存储这些树，数组中每个成员 $P[i]$ 表示元素 $i$ 的父节点。
+如果 $i$ 是根，那么 $P[i] = i$。
+
+初始时，对于 $1\le i \le N,\,{}P[i] = i$。
+
 \subsection{并查算法}
+
+对元素 $X$ 执行 $\mathrm{Find}(X)$ 操作会返回包含 $X$ 的的树的根，
+这可以通过不断对它的父节点执行 \verb|Find| 操作完成。
+\begin{lstlisting}{language=C}
+Find(x):
+	if P[x] == x
+		return x;
+	else
+		return Find(P[x]);
+\end{lstlisting}
+执行这次操作的时间与表示 $X$ 的节点的深度成正比。
+
+为了执行两个元素的 \verb|Union| 运算，只需使一个节点的根指向另一棵树的根节点。
+\begin{lstlisting}{language=C}
+Union(x, y):
+	P[ Find(x) ] = P[ Find(y) ];
+\end{lstlisting}
+
+上面伪代码表示的基本算法的实现中，假设差错检验已经执行。
+
+\subsection{路径压缩}
+
+如果存在大量对深节点的 \verb|Find| 操作，
+那么将重复执行很多次相同的递归调用，这是非常浪费时间的。
+于是可以考虑每次执行 \verb|Find| 操作时，
+将该节点的根节点修改为其树的根节点，以减少将来访问的时间。
+
+\begin{lstlisting}{language=C}
+Find(x):
+	if P[x] == x
+		return x;
+	else
+		return P[x] = Find(P[x]);
+\end{lstlisting}
+
+优化后的算法在最坏情形下几乎是线性的。在最坏情况下需要的时间是
+$\Theta(M\alpha(M,N))$ (假设 $M\ge N$)，
+其中 $\alpha(M, N)$ 是 Ackermann 函数的逆。
 
 \section{例题：TROY Query}
 
-这是 Codeforces Hello 2015 (Div. 2) 的 F 题\footnote{http://codeforces.com/gym/100571/problem/F}。
+以 Codeforces Hello 2015 (Div. 2) 的 F 题\footnote{http://codeforces.com/gym/100571/problem/F}。
 
 \section{符号说明}
 
