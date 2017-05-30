@@ -3,6 +3,7 @@
 
 \documentclass[withoutpreface,bwprint]{cumcmthesis}
 
+\usepackage{mathrsfs}
 
 \coursename{ACM-ICPC 算法与程序设计}
 \title{基于不相交集的问题求解报告}
@@ -167,7 +168,83 @@ $\Theta(M\alpha(M,N))$ (假设 $M\ge N$)，
 
 \section{例题：TROY Query}
 
-以 Codeforces Hello 2015 (Div. 2) 的 F 题\footnote{http://codeforces.com/gym/100571/problem/F}。
+本文以 Codeforces Hello 2015 (Div. 2) 的 F 题\footnote{http://codeforces.com/gym/100571/problem/F}为例，
+展示并查集在实际问题中的综合与应用。
+
+\subsection{问题大意}
+
+给出一个 $10^{18} \times 10^{18}$ 的棋盘，
+每个格子里要么是 $+1$、要么是 $-1$。
+对这个棋盘可以执行两种操作：
+
+\begin{enumerate}
+\item 将一行中的所有格子里的数乘以 $-1$ .
+\item 将一列中的所有格子里的数乘以 $-1$ .
+\end{enumerate}
+
+现在有两个这样的棋盘，记为 $a$ 和 $b$。
+初始时两个棋盘上的所有格子都未知。
+现在有若干次询问，每次询问告诉你两个棋盘上第 $x$ 行、第 $y$ 列的格子分别是什么。
+你需要指出在当前已知的信息下，能否通过若干次操作使 $a$ 变成 $b$。
+需要注意的是每次询问已知的信息是累计的，
+对于未知的格子应当假设它们的值是使变换可能（如果可能）的值。
+
+询问最多 $10^5$ 个，且有 $1\le x,y \le 10^{18}$。
+
+\subsection{问题分析}
+
+首先我们注意到，对每行或每列的执行操作的次数和顺序是不重要的，
+唯一需要关注的是执行操作的次数的奇偶，也就是该行（列）的元素最终有没有被反号。
+
+现在用 $R(x)$ 表示第 $x$ 行最终没有被反号，用 $C(y)$ 表示第 $y$ 列最终没有被反号。
+同时 $\neg R(x)$ 和 $\neg C(y)$ 表示第 $x$ 行或第 $y$ 列最终反号了。
+
+然后考虑某一个格子 $(x,y)$。
+
+如果 $a_{x,y} = b_{x,y}$，那么变换后 $a$ 中对应的格子必须不变，
+也即是 $R(x)$ 和 $C(y)$ 必须同时成立，或者 $\neg R(x)$ 和 $\neg C(y)$ 同时成立。
+我们用 $\sim$ 表示同时成立，上述限制也即是 $R(x) \sim C(y)$ 或 $\neg{}R(x)\sim\neg{}C(y)$。
+这其实是一种等价关系。
+
+同理，如果 $a_{x,y} \ne b_{x,y}$，
+那么 $R(x) \sim\neg C(y)$ 或 $\neg{}R(x)\sim{}C(y)$。
+
+显然，如果在某次查询后，
+存在一个 $x$ 使得 $R(x)\sim\neg{}R(x)$ 或 $C(x)\sim\neg{}C(x)$，
+那么从 $a$ 到 $b$ 的变换就不可能了，并且对于以后的所有查询也是不可能。
+
+很显然，这是一类动态等价性的问题，可以用并查集来解决。
+
+但此时还有一个问题，$x,y$ 高达 $10^{18}$，
+用数组表示并查集的话，则需要 $4\times{}10^{18}$ 个元素。
+256兆的内存是开不下这么大的数组的。
+注意到询问最多只有 $10^5$ 个，这样不相同的 $x$ 或 $y$ 最多 $10^5$ 个。
+因此可以做一次离散化使 $x$ 和 $y$ 变小，这样就最多只用开一个 $4\times{}10^5$ 的数组了。
+
+\subsection{解决方案}
+
+顺序读取每个查询，把大坐标映射成一个小的虚拟坐标，
+只要相同的行或列映射成相同的虚拟行（列）坐标即可。
+
+\newcommand\mX{\mathscr{X}}
+\newcommand\mY{\mathscr{Y}}
+\newcommand\mU{\mathrm{Union}}
+\newcommand\mF{\mathrm{Find}}
+
+对于虚拟坐标 $(\mX,\:\mY)$，
+分别用数字
+$\mX$、$\mX+1$、$\mY+2$、$\mY+3$
+表示
+$R(\mX)$、$\neg{}R(\mX)$、$C(\mY)$、$\neg{}C(\mY)$。
+
+如果 $a_{\mX,\mY} == b_{\mX,\mY}$，
+则执行 $\mU(R(\mX),\:{}C(\mY))$ 和 $\mU(\neg{}R(\mX),\:\neg{}C(\mY))$。
+如果 $a_{\mX,\mY} \ne b_{\mX,\mY}$，
+则执行 $\mU(R(\mX),\:\neg{}C(\mY))$ 和 $\mU(\neg{}R(\mX),\:{}C(\mY))$。
+
+之后检查是否有 $R(\mX)\sim\neg{}R(\mX)$ 或 $C(\mY)\sim\neg{}C(\mY)$。
+若有则变换不可能，且之后所有询问都不可能。
+否则当前询问后变换可能，继续处理下一个询问。
 
 \section{符号说明}
 
