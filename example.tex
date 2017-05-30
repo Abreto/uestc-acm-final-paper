@@ -25,7 +25,9 @@
 本文讨论了实现不相交集的基础数据结构：数组、红黑树、树。本文采用树来实现不相交集。
 接着给出了朴素的求并、查询算法，然后用所谓的路径压缩优化了查询算法。
 
-最后给出了一道例题，并写出了完整的求解报告。
+最后为说明并查集在具体问题中的应用，给出了一道例题，并提供了完整的求解报告。
+
+在附录中给出了校赛的账号和密码。
 
 \keywords{不相交集\quad  算法\quad   数据结构\quad  程序设计}
 \end{abstract}
@@ -233,7 +235,7 @@ $\Theta(M\alpha(M,N))$ (假设 $M\ge N$)，
 
 对于虚拟坐标 $(\mX,\:\mY)$，
 分别用数字
-$\mX$、$\mX+1$、$\mY+2$、$\mY+3$
+$2\mX-1$、$2\mX$、$\mathcal{MAXT}-2\mY$、$\mathcal{MAXT}-2\mY+1$
 表示
 $R(\mX)$、$\neg{}R(\mX)$、$C(\mY)$、$\neg{}C(\mY)$。
 
@@ -246,32 +248,16 @@ $R(\mX)$、$\neg{}R(\mX)$、$C(\mY)$、$\neg{}C(\mY)$。
 若有则变换不可能，且之后所有询问都不可能。
 否则当前询问后变换可能，继续处理下一个询问。
 
-\section{符号说明}
+\subsection{实现与评测}
 
-\begin{tabular}{cc}
- \hline
- \makebox[0.4\textwidth][c]{符号}	&  \makebox[0.5\textwidth][c]{意义} \\ \hline
- D	    & 木条宽度（cm） \\ \hline
- L	    & 木板长度（cm）  \\ \hline
- W	    & 木板宽度（cm）  \\ \hline
- N	    & 第n根木条  \\ \hline
- T	    & 木条根数  \\ \hline
- H	    & 桌子高度（cm）  \\ \hline
- R	    & 桌子半径（cm）  \\ \hline
- R	    & 桌子直径（cm）  \\ \hline
-\end{tabular}
+使用 C++ 实现上述解法\footnote{具体代码请见\ref{cppsource}}，
+提交并通过了 Codeforces 的测评，如图\ref{verdicp}。
 
-\section{问题分析}
-
-\subsection{问题三分析}
-题目要求制作软件的意思就是客户给定折叠桌高度、桌面边缘线的形状大小和桌脚边缘线的大致形状，将这些信息输入程序就得到客户想要的桌子。我们在求解最优设计加工参数时，自行给定桌面边缘线形状（椭圆、相交圆等），桌脚边缘线形状，折叠桌高度，应用第二问的非线性规划模型，用MATLAB软件绘制折叠桌截面图，得到自己设计的创意平板折叠桌。
-
-问题三流程图：
-%\begin{figure}[!h]
-%\centering
-%\includegraphics[width=\textwidth]{1.png}
-%\caption{问题三流程图}
-%\end{figure}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{v.png}
+\caption{测评结果}\label{verdicp}
+\end{figure}
 
 %参考文献
 \bibliographystyle{unsrt}
@@ -281,8 +267,27 @@ $R(\mX)$、$\neg{}R(\mX)$、$C(\mY)$、$\neg{}C(\mY)$。
 \newpage
 %附录
 \appendix
-\section{Hello 源代码}
-\lstinputlisting[language=C]{src/hello.c}
+\section{TROY Query 源代码}\label{cppsource}
+\lstinputlisting[language=C++]{src/troy.cpp}
 
+\section{OJ 帐号与密码}
 
-\end{document} 
+OJ 帐号实在太多，故仅列出部分。以下密码在 2017 年 07 月 01 日前有效。
+
+%SpecialPWD,by0701.
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+ \hline
+ \makebox[0.1\textwidth][c]{OJ}	& \makebox[0.3\textwidth][c]{链接} & \makebox[0.1\textwidth]{帐号} & \makebox[0.2\textwidth]{密码} \\ \hline
+ cdoj & http://mozhu.today & \verb|abreto| & \verb|SpecialPWD,by0701.| \\ \hline
+ codeforces & http://abreto.cf & \verb|Abreto| & \verb|SpecialPWD,by0701.| \\ \hline
+ AtCoder & http://atcoder.jp & \verb|abreto| & \verb|SpecialPWD,by0701.| \\ \hline
+ Virtual Judge & https://vjudge.net & \verb|Abreto| & \verb|SpecialPWD,by0701.| \\ \hline
+\end{tabular}
+\caption{部分 OJ 帐号与密码}
+\end{table}
+
+特别的，校赛帐号是 \verb|15th_team067|，密码是 \verb|aIbv8f0J|，决赛排名42，获二等奖。
+
+\end{document}
